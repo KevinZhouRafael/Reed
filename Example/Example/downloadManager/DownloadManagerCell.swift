@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-import ActiveSQLite
+import ZKORM
 import Reed
 
 class DownloadManagerCell: UITableViewCell {

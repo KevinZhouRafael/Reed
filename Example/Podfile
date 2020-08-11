@@ -1,12 +1,11 @@
-source 'https://github.com/CocoaPods/Specs.git'
+#source 'https://github.com/CocoaPods/Specs.git'
 
-platform :ios, '8.0'
+platform :ios, '10.0'
 use_frameworks!
 
 target 'Example' do
-
-    pod 'Reed', :path => '../../Reed'
-    pod 'ActiveSQLite', #:path => '../../ActiveSQLite'
+    pod 'Reed', :path => '~/myopensource/ios/Reed'
     pod 'CryptoSwift'
-end
 
+    pod 'ZKORM', :path => '~/myopensource/ios/ZKORM'
+end

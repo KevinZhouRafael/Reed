@@ -9,8 +9,8 @@
 import UIKit
 import Reed
 import CryptoSwift
-import ActiveSQLite
-import SQLite
+import ZKORM
+import GRDB
 
 class PreDownloadListVC: UITableViewController {
 
@@ -74,7 +74,7 @@ class PreDownloadListVC: UITableViewController {
         
         let destPath = "Documents/" + fileName
         
-        let savedInfo = ReedInfo.findFirst(ReedInfo.KEY == url.md5())
+        let savedInfo = try! ReedInfo.findOne(ReedInfo.Columns.key == url.md5())
         if savedInfo == nil {
 
             if url.hasSuffix(".dmg"){

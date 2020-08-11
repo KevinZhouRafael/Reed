@@ -9,7 +9,7 @@
 import Foundation
 public extension FilePath{
     static func getDownloadDBPath() -> String {
-        let dbPath = documentDictionary() + "/ActiveSQLite_DBNAME_ReedDownload.db"
+        let dbPath = documentDictionary() + "/DBNAME_ReedDownload.db"
         FilePath.checkOrCreateFile(filePath: dbPath)
         return dbPath
     }

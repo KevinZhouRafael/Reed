@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import SQLite
-import ActiveSQLite
+import GRDB
+import ZKORM
 
 class ReedCache {
     
@@ -31,7 +31,7 @@ class ReedCache {
         pthread_mutex_lock(&mutex)
         downloadInfoDic = [:]
         
-        let infos = ReedInfo.findAll( ReedInfo.CONTEXT == manager.context, orders:[ReedInfo.created_at.asc, ReedInfo.id.asc])
+        let infos = try! ReedInfo.findAll(ReedInfo.Columns.context == manager.context, order:[ZKORMModel.Columns.created_at.asc, ZKORMModel.Columns.id.asc])
         
         if infos.count > 0 {
             for info in infos {
@@ -49,8 +49,8 @@ class ReedCache {
     
     func save(_ info:ReedInfo ,forKey key:String, complete:((_ success:Bool)->())? = nil) -> Void {
         
-        ActiveSQLite.save(db: info.db, {
-            try info.save()
+        ZKORM.save(dbQueue: try! info.getDBQueue(), {db in
+            try info.save(db)
         }, completion: {[weak self] (error) in
             if error == nil {
                 if let self = self {
@@ -75,7 +75,7 @@ class ReedCache {
         
         if let info = downloadInfoDic[key] {
             return info
-        }else if let info = ReedInfo.findFirst(ReedInfo.KEY == key && ReedInfo.CONTEXT == manager.context){
+        }else if let info = try! ReedInfo.findOne(ReedInfo.Columns.key == key && ReedInfo.Columns.context == manager.context){
             info.retryCount = manager.maxRetryCount
             pthread_mutex_lock(&mutex)
             downloadInfoDic[key] = info
@@ -108,25 +108,33 @@ class ReedCache {
         pthread_mutex_lock(&mutex)
         defer {pthread_mutex_unlock(&mutex)}
         
+        //优先按照时间排序，时间相同按照id排序
         if let key = downloadListKey{
             return downloadInfoDic.values.filter{$0.downloadListKey == key}.sorted(by: {
-                if $0.created_at.int64Value == $1.created_at.int64Value{
-                    return $0.id!.int64Value < $1.id!.int64Value
+                if $0.created_at?.timeIntervalSince1970 == $1.created_at?.timeIntervalSince1970{
+                    return $0.id! < $1.id!
                 }else{
-                    return $0.created_at.int64Value < $1.created_at.int64Value
+                    if let created_at0 = $0.created_at,let created_at1 = $1.created_at{
+                        return $0.created_at!.timeIntervalSince1970 < $1.created_at!.timeIntervalSince1970
+                    }else{
+                        return false
+                    }
+                    
                 }
             })
         }else{
             return downloadInfoDic.values.sorted(by: {
-                if $0.created_at.int64Value == $1.created_at.int64Value{
-                    return $0.id!.int64Value < $1.id!.int64Value
+                if $0.created_at?.timeIntervalSince1970 == $1.created_at?.timeIntervalSince1970{
+                    return $0.id! < $1.id!
                 }else{
-                    return $0.created_at.int64Value < $1.created_at.int64Value
+                    if let created_at0 = $0.created_at,let created_at1 = $1.created_at{
+                        return $0.created_at!.timeIntervalSince1970 < $1.created_at!.timeIntervalSince1970
+                    }else{
+                        return false
+                    }
                 }
             })
         }
-        
-        
         
     }
     

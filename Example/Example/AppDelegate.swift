@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import ActiveSQLite
+import ZKORM
 import Reed
 
 
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //        Reed.shared.delegate = self
         
         //自动延续未完成的下载 Auto to start download uncomplete items.
-        Reed.shared.checkToStart()
+        Reed.shared.checkNetToStart()
         
         return true
     }

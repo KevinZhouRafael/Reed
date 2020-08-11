@@ -7,8 +7,8 @@
 //
 
 import Foundation
-import ActiveSQLite
-import SQLite
+import ZKORM
+
 
 extension Reed{
     
@@ -137,13 +137,13 @@ extension Reed{
             
             },progress: {[weak self,currentInfo] (task, progress, writedBytes, totalBytes) in
 
-                currentInfo.writedBytes = NSNumber(value:writedBytes)
-                currentInfo.totalBytes = NSNumber(value:totalBytes)
+                currentInfo.writedBytes = UInt64(writedBytes)
+                currentInfo.totalBytes = UInt64(totalBytes)
                 currentInfo.downloadStatus = .downloading
                 
                 try? currentInfo.update()
                 
-                let currentTimeInterval = NSDate().timeIntervalSince1970
+                let currentTimeInterval = Date().timeIntervalSince1970
                 if currentInfo.lastPostTimeInterval + Reed.shared.progressPostTimeInterval <= currentTimeInterval {
                     currentInfo.lastPostTimeInterval = currentTimeInterval
                     DispatchQueue.main.async {
@@ -373,7 +373,7 @@ extension Reed{
     
     /// terminate all download tasks
     /// Call this function when : user logout; no network; go to background;
-    public func shutDown(){
+    internal func shutDown(){
 
 //        cache.getAll().forEach { (downloadInfo) in
 //            DownloadManager.shared.stop(downloadInfo.url)

@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 import Reed
-import ActiveSQLite
-import SQLite
+import ZKORM
 
 class DownloadManagerVC: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
@@ -26,6 +25,8 @@ class DownloadManagerVC: UIViewController,UITableViewDelegate,UITableViewDataSou
     }
     
     func reloadSelf(){
+        let _ = Reed.shared.configDownLoadManager()
+        
         infos = Reed.shared.getDownloadInfos()
         tableView.reloadData()
     }
@@ -44,7 +45,7 @@ class DownloadManagerVC: UIViewController,UITableViewDelegate,UITableViewDataSou
     }
     
     @IBAction func shutDown(_ sender: Any) {
-        Reed.shared.shutDown()
+        Reed.shared.stopDownload()
     }
     
 //    @IBAction func checkToStart(_ sender: Any){

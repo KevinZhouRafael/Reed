@@ -8,8 +8,8 @@
 
 import UIKit
 
-import ActiveSQLite
-import SQLite
+import ZKORM
+import GRDB
 import CocoaLumberjack
 
 /// 通知：object 是 ReedInfo
@@ -81,8 +81,17 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         isMultiSession = true
         
         Log.i("Download db path：\(dbPath)")
-        ASConfigration.setDB(path: dbPath, name: DBNAME_ReedDownload)
+        ZKORMConfigration.setDB(path: dbPath, name: DBNAME_ReedDownload)
+        try! ReedInfo.createTable()
         cache = ReedCache(manager: self)
+        
+        //打开监听
+        ReedReachability.startMonitor()
+        addNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     public var showLogger:Bool = true {
@@ -111,8 +120,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
             break
         }
         
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
@@ -128,8 +137,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     
     func pauseStatusAndPost(downloadInfo:ReedInfo,isTryStart:Bool = false){
         downloadInfo.downloadStatus = .pause
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
@@ -146,8 +155,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     
     func waitingStatus(downloadInfo:ReedInfo){
         downloadInfo.downloadStatus = .waiting
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: nil)
         
     }
@@ -155,8 +164,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     
     func waitingStatusAndPost(downloadInfo:ReedInfo,isTryStart:Bool = false){
         downloadInfo.downloadStatus = .waiting
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
@@ -174,8 +183,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     
     func downloadingStatusAndPost(downloadInfo:ReedInfo){
         downloadInfo.downloadStatus = .downloading
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: {(error) in
             if error == nil {
                 DispatchQueue.main.async {
@@ -189,8 +198,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     
     func completeStatusAndPost(downloadInfo:ReedInfo,isTryStart:Bool = false){
         downloadInfo.downloadStatus = .completed
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.update()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }, completion: {[weak self](error) in
             if error == nil {
                 DispatchQueue.main.async {
@@ -205,8 +214,8 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
     }
 
     func deleteAndPost(downloadInfo:ReedInfo,isTryStart:Bool = false){
-        ActiveSQLite.save(db: downloadInfo.db, {
-            try downloadInfo.delete()
+        ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
+            try downloadInfo.update(db)
         }) { [weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {

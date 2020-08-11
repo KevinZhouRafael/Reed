@@ -7,16 +7,8 @@
 //
 
 import Foundation
-import ActiveSQLite
-import SQLite
-
-@objc public enum ReedDownloadStatusOC:Int{
-    case waiting
-    case downloading
-    case pause
-    case completed
-    case faild
-}
+import ZKORM
+import GRDB
 
 public enum ReedDownloadStatus: String {
 //    case pending
@@ -36,30 +28,29 @@ public enum ReedDownloadFailReason:String{
     case md5Verification
 }
 
-public let DBNAME_ReedDownload  = "ActiveSQLite_DBNAME_ReedDownload"
+public let DBNAME_ReedDownload  = "DBNAME_ReedDownload"
 
 
 /// Also be called DownloadInfo in this project
-public class ReedInfo: ASModel {
-
-    @objc public var key:String = "" //算法生成（kcuuid+url）.md5
-    @objc public var url:String = ""
-    @objc public var md5:String?
-    @objc public var totalBytes:NSNumber = 0
-    @objc public var writedBytes:NSNumber = 0
+public class ReedInfo: ZKORMModel {
+    public var key:String = "" //算法生成（kcuuid+url）.md5
+    public var url:String = ""
+    public var md5:String?
+    public var totalBytes:UInt64 = 0
+    public var writedBytes:UInt64 = 0
     
-    @objc public var destFilePath = ""
-    @objc public var cacheFilePath = ""
+    public var destFilePath = ""
+    public var cacheFilePath = ""
     
     //上下文。每个app运行时只有一个context，如果要修改context，就要shutdown和clear。建议使用（用户唯一标识kcuuid）。该数值从Reed传来
     /// this context is same as Reed.context.
-    @objc public var context = ""
+    public var context = ""
     
     //下载列表。每个context下，有多个downloadlistkey。建议使用 （用户唯一标识kcuuid+列表key）
     /// one context contains many downloadListKey. every download list has separate max download count.
-    @objc public var downloadListKey = ""
+    public var downloadListKey = ""
     
-    @objc private var status:String = ReedDownloadStatus.waiting.rawValue //隐藏属性 hide property
+    private var status:String = ReedDownloadStatus.waiting.rawValue //隐藏属性 hide property
     public var downloadStatus:ReedDownloadStatus{ //暴露属性 public property
         get{
             return ReedDownloadStatus(rawValue: self.status)!
@@ -68,24 +59,8 @@ public class ReedInfo: ASModel {
             self.status = newValue.rawValue
         }
     }
-    @objc public var statusForOC:ReedDownloadStatusOC{
-        
-        switch downloadStatus {
-        case .waiting:
-            return .waiting
-        case .downloading:
-            return .downloading
-        case .pause:
-            return .pause
-        case .completed:
-            return .completed
-        case .faild:
-            return .faild
-        }
-        
-    }
     
-    @objc private var failReason:String?
+    private var failReason:String?
     public var downloadFailReason:ReedDownloadFailReason?{
         get{
             return ReedDownloadFailReason(rawValue: (self.failReason ?? ReedDownloadFailReason.unknown.rawValue))
@@ -95,25 +70,23 @@ public class ReedInfo: ASModel {
         }
     }
     
-    public static let KEY = SQLite.Expression<String>("key")
-    public static let STATUS = SQLite.Expression<String>("status")
-    public static let CONTEXT = SQLite.Expression<String>("context")
-    public static let DOWNLOADLISTKEY = SQLite.Expression<String>("downloadListKey")
-    
+    //以下是瞬时属性，不做持久化
     var pendingCencel:Bool = false //即将取消（暂停）
     var pendingRunning:Bool = false //即将开始下载
     var forcePause:Bool = false //设为暂停状态。 If current download task status is predingRunning, then click pause, set forcePause true, when predingRunning end, not set running status, set pause status.
     var retryCount = 0 //重试次数 md5 retry times in a downloadlist
-    var lastPostTimeInterval:TimeInterval = NSDate().timeIntervalSince1970
+    var lastPostTimeInterval:TimeInterval = Date().timeIntervalSince1970
+    
+
     
     override public class var isSaveDefaulttimestamp:Bool{
         return true
     }
-    
+
     override public class var dbName:String?{
         return DBNAME_ReedDownload
     }
-    
+
     override public func transientTypes() -> [String] {
         return ["pendingCencel","pendingRunning","retryCount","forcePause","lastPostTimeInterval"]
     }
@@ -132,15 +105,61 @@ public class ReedInfo: ASModel {
         }
         
         self.md5 = md5
-        
         super.init()
     }
     
+    
+    public enum Columns: String, ColumnExpression,CaseIterable {
+        case key
+        case url
+        case md5
+        case totalBytes
+        case writedBytes
+        case destFilePath
+        case cacheFilePath
+        case context
+        case downloadListKey
+        case status
+        case failReason
+    }
     
     required init() {
         super.init()
     }
     
+    required init(from decoder: Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
+    
+    required init(row: Row) {
+        super.init(row: row)
+        key = row[Columns.key]
+        url = row[Columns.url]
+        md5 = row[Columns.md5]
+        totalBytes = row[Columns.totalBytes]
+        writedBytes = row[Columns.writedBytes]
+        destFilePath = row[Columns.destFilePath]
+        cacheFilePath = row[Columns.cacheFilePath]
+        context = row[Columns.context]
+        downloadListKey = row[Columns.downloadListKey]
+        status = row[Columns.status]
+        failReason = row[Columns.failReason]
+    }
+    
+    public override func encode(to container: inout PersistenceContainer) {
+        container[Columns.key] = key
+        container[Columns.url] = url
+        container[Columns.md5] = md5
+        container[Columns.totalBytes] = totalBytes
+        container[Columns.writedBytes] = writedBytes
+        container[Columns.destFilePath] = destFilePath
+        container[Columns.cacheFilePath] = cacheFilePath
+        container[Columns.context] = context
+        container[Columns.downloadListKey] = downloadListKey
+        container[Columns.status] = status
+        container[Columns.failReason] = failReason
+        super.encode(to: &container)
+    }
     
     //MARK: 重试
  /*   private var timer:Timer?
@@ -201,5 +220,3 @@ public class ReedInfo: ASModel {
  */
     
 }
-
-

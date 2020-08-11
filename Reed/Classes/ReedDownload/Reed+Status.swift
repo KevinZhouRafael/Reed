@@ -8,7 +8,7 @@
 
 import Foundation
 
-@objc extension Reed{
+extension Reed{
     
     /// 下载中（下载中，等待，暂停，失败）
     /// Downloading progress (Downloading, waiting,pause,failed)
@@ -188,11 +188,11 @@ import Foundation
         //let waitingInfos = self.getWaitingInfos()
         let preDownloadingInfos = downloadingInfos
         var preDownloadingBytes = preDownloadingInfos.reduce(0) { (result, info) -> Int64 in
-            return result + (info.totalBytes.int64Value - info.writedBytes.int64Value)
+            return result + (Int64(info.totalBytes) - Int64(info.writedBytes))
         }
         
         if let info = preDownloadInfo {
-            preDownloadingBytes += (info.totalBytes.int64Value - info.writedBytes.int64Value)
+            preDownloadingBytes += (Int64(info.totalBytes) - Int64(info.writedBytes))
         }
         
         //空间已满 full

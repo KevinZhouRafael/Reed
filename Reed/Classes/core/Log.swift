@@ -14,8 +14,10 @@ class Log{
     
     static func config(level:DDLogLevel? = .info, timeFormatter:(()->String)? = nil){
         let timeFF = timeFormatter ?? timeFormatterFunction
-        DDTTYLogger.sharedInstance.logFormatter = LoggerFormatter(timeFF)
-        DDLog.add(DDTTYLogger.sharedInstance, with: level ?? .info) // TTY = Xcode console
+        if let logger = DDTTYLogger.sharedInstance{
+            logger.logFormatter = LoggerFormatter(timeFF)
+            DDLog.add(logger as! DDLogger, with: level ?? .info) // TTY = Xcode console
+        }
 
         //    DDTTYLogger.sharedInstance.colorsEnabled = true
         //    DDLog.add(DDASLLogger.sharedInstance) // ASL = Apple System Logs

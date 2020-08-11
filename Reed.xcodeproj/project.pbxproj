@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A42824524E23C3A0031FF2B /* ReedReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A42824424E23C3A0031FF2B /* ReedReachability.swift */; };
+		0A42824724E23FD00031FF2B /* Reed+Net.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A42824624E23FD00031FF2B /* Reed+Net.swift */; };
 		560B2DE3231B9AD20099D614 /* Reed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560B2DDD231B9AD10099D614 /* Reed.swift */; };
 		560B2DE4231B9AD20099D614 /* FilePath+Reed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560B2DDE231B9AD10099D614 /* FilePath+Reed.swift */; };
 		560B2DE5231B9AD20099D614 /* Reed+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560B2DDF231B9AD10099D614 /* Reed+Status.swift */; };
@@ -25,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0A42824424E23C3A0031FF2B /* ReedReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReedReachability.swift; sourceTree = "<group>"; };
+		0A42824624E23FD00031FF2B /* Reed+Net.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reed+Net.swift"; sourceTree = "<group>"; };
 		560B2DDD231B9AD10099D614 /* Reed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reed.swift; sourceTree = "<group>"; };
 		560B2DDE231B9AD10099D614 /* FilePath+Reed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FilePath+Reed.swift"; sourceTree = "<group>"; };
 		560B2DDF231B9AD10099D614 /* Reed+Status.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Reed+Status.swift"; sourceTree = "<group>"; };
@@ -108,13 +112,15 @@
 		CFC9DE9020C9284000B439A6 /* ReedDownload */ = {
 			isa = PBXGroup;
 			children = (
+				0A42824424E23C3A0031FF2B /* ReedReachability.swift */,
+				CFF372D920D9021600688653 /* FileMD5.swift */,
 				560B2DDE231B9AD10099D614 /* FilePath+Reed.swift */,
 				560B2DDD231B9AD10099D614 /* Reed.swift */,
 				560B2DE2231B9AD10099D614 /* Reed+Control.swift */,
 				560B2DDF231B9AD10099D614 /* Reed+Status.swift */,
+				0A42824624E23FD00031FF2B /* Reed+Net.swift */,
 				560B2DE0231B9AD10099D614 /* ReedCache.swift */,
 				560B2DE1231B9AD10099D614 /* ReedInfo.swift */,
-				CFF372D920D9021600688653 /* FileMD5.swift */,
 			);
 			path = ReedDownload;
 			sourceTree = "<group>";
@@ -210,7 +216,9 @@
 				560B2DE8231B9AD20099D614 /* Reed+Control.swift in Sources */,
 				56D69FB02331D191008B16C9 /* Log.swift in Sources */,
 				CFF372DA20D9021700688653 /* FileMD5.swift in Sources */,
+				0A42824524E23C3A0031FF2B /* ReedReachability.swift in Sources */,
 				560B2DE5231B9AD20099D614 /* Reed+Status.swift in Sources */,
+				0A42824724E23FD00031FF2B /* Reed+Net.swift in Sources */,
 				CFC9DE9A20C9284000B439A6 /* DownloadTaskDelegate.swift in Sources */,
 				CFC9DE9D20C9284000B439A6 /* DownloadManager.swift in Sources */,
 				560B2DE7231B9AD20099D614 /* ReedInfo.swift in Sources */,
