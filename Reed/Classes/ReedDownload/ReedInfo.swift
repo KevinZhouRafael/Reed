@@ -30,6 +30,15 @@ public enum ReedDownloadFailReason:String{
 
 public let DBNAME_ReedDownload  = "DBNAME_ReedDownload"
 
+extension ReedInfo{
+    public var progress:Float{
+        if totalBytes == 0{
+            return 0.0
+        }else{
+            return Float(writedBytes)/Float(totalBytes)
+        }
+    }
+}
 
 /// Also be called DownloadInfo in this project
 public class ReedInfo: ZKORMModel {

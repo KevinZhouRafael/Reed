@@ -28,7 +28,7 @@ Reed is a downloader framework for Swift. It is many fetures, stability，fast, 
   s.source           = { :git => 'https://github.com/KevinZhouRafael/Reed.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.swift_versions = ['5.0','5.1','5.2']
+  s.swift_versions = ['5.3']
   s.ios.deployment_target = '10.0'
 
   s.requires_arc = true
@@ -38,6 +38,6 @@ Reed is a downloader framework for Swift. It is many fetures, stability，fast, 
   s.dependency 'CocoaLumberjack/Swift'
   s.dependency 'ReachabilitySwift'
 
-  s.dependency 'ZKORM','0.1.0'
+  s.dependency 'ZKORM','0.6.0'
   s.dependency 'ZKCommonCrypto'
 end

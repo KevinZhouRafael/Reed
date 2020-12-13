@@ -75,6 +75,22 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }
     }
     
+    public var needUrlEncoding:Bool{
+        get{
+            return DownloadManager.shared.needUrlEncoding
+        }
+        set{
+            DownloadManager.shared.needUrlEncoding = newValue
+        }
+    }
+    
+    public var allowCellularDownload:Bool = false{
+        didSet{
+            if allowCellularDownload != oldValue{
+                checkReabilityChanged()
+            }
+        }
+    }
     
     private override init() {
         super.init()

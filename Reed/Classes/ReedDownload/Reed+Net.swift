@@ -65,20 +65,21 @@ public extension Reed{
         NotificationCenter.default.removeObserver(self)
     }
         
-    @objc func loginHandler(){
-        configDownLoadManager()
-    }
-    
-    @objc func logoutHandler(){
-        stopDownload()
-    }
+    //示例代码
+//    @objc func loginHandler(){
+//        configDownLoadManager()
+//    }
+//
+//    @objc func logoutHandler(){
+//        stopDownload()
+//    }
     
     @objc func appEnterBackground(noti:Notification){
         stopDownload()
     }
         
     @objc func appEnterForeground(noti:Notification){
-        reachabilityDownloadOrNot(reachability: ReedReachability.reachability)
+        checkReabilityChanged()
     }
     
 
@@ -146,6 +147,10 @@ public extension Reed{
         timer?.fire()
     }
     
+    func checkReabilityChanged(){
+        reachabilityDownloadOrNot(reachability: ReedReachability.reachability)
+    }
+    
     private func reachabilityDownloadOrNot(reachability:Reachability){
         
         let connection = reachability.connection
@@ -160,13 +165,13 @@ public extension Reed{
             break
         case .cellular:
             print("+++++++++++++++++++++++++网络状态+++蜂窝+++++++++++++++++++++++++++++++++++++")
-//                if KCUserDefaultsManager.getAllowCellularFileDownload(){
+            if allowCellularDownload{
                 print("+++++++++++++++++++++蜂窝数据下载+++++++++++++++++++++++++++++++++++++")
                 startDownloadDelay()
-//                }else{
-//                    Log.i("+++++++++++++++++++++蜂窝数据停止下载+++++++++++++++++++++++++++++++++++++")
-//                    stopDownload()
-//                }
+            }else{
+                Log.i("+++++++++++++++++++++蜂窝数据停止下载+++++++++++++++++++++++++++++++++++++")
+                stopDownload()
+            }
             break
         default:
             print("+++++++++++++++++++++++++网络状态+++未知+++++++++++++++++++++++++++++++++++++")

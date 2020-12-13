@@ -32,6 +32,7 @@ public class DownloadManager:NSObject {
     
     public var timeoutInterval:TimeInterval = 20
     var isMultiSession:Bool = true //not use signal configuration
+    public var needUrlEncoding:Bool = true
     
 //    private  let queue: DispatchQueue = DispatchQueue(label: "com.kaochong.download.queue")
 

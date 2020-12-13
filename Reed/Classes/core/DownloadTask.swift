@@ -86,8 +86,13 @@ public class DownloadTask:NSObject {
         FilePath.checkOrCreateFile(filePath: cacheFilePath)
         
         let cacheFileSize = getFileSize(cacheFilePath: cacheFilePath)
-        let urlEncodingString = self.urlString.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
-        let url = URL(string: urlEncodingString!)!
+        
+        var url = URL(string: self.urlString)!
+        
+        if DownloadManager.shared.needUrlEncoding{
+            let urlEncodingString = self.urlString.addingPercentEncoding(withAllowedCharacters:NSCharacterSet.urlQueryAllowed)
+            url = URL(string: urlEncodingString!)!
+        }
         
         var request = URLRequest(url: url)
         request.timeoutInterval = DownloadManager.shared.timeoutInterval
@@ -191,7 +196,7 @@ extension DownloadTask:URLSessionDataDelegate {
         }
         
         var breakPoint:Int64 = 0
-        //"bytes=24393258-"
+        //"bytes=24393258-" eg: bytes 10-395961/395962
         if let rangeHeader = dataTask.currentRequest?.allHTTPHeaderFields!["Range"]{
             let index = rangeHeader.index(rangeHeader.startIndex, offsetBy:6)
             let endIndex = rangeHeader.firstIndex(of: "-")
@@ -222,7 +227,7 @@ extension DownloadTask:URLSessionDataDelegate {
 //        _ = data.withUnsafeBytes { outputStream?.write($0, maxLength: data.count) }
         
 //        let s = String(format: "下载进度-- url=\(urlString) \n  , 已下载\(progress.completedUnitCount), 总大小\(progress.totalUnitCount)， %.2f", progress.fractionCompleted * 100)
-        let s = String(format: "下载url: \(fileName) , 下载量completedUnitCount/totalUnitCount: \(progress.completedUnitCount)/\(progress.totalUnitCount)， 进度progress,%.2f%%", progress.fractionCompleted * 100)
+        let s = "下载url: \(fileName) , 下载量completedUnitCount/totalUnitCount: \(progress.completedUnitCount)/\(progress.totalUnitCount)， 进度progress,\(Formatter.fractionDigits2.string(from: NSNumber.init(value: progress.fractionCompleted * 100)))%"
         Log.d(s)
         
 
@@ -230,6 +235,16 @@ extension DownloadTask:URLSessionDataDelegate {
         
     }
     
+}
+
+public struct Formatter {
+    static var fractionDigits2: NumberFormatter = {
+        let f = NumberFormatter()
+        f.minimumFractionDigits = 2//0
+        f.maximumFractionDigits = 2//0
+        f.numberStyle = .none  //.decimal三位一个逗号
+        return f
+    }()
 }
 
 extension DownloadTask:URLSessionTaskDelegate{
@@ -272,6 +287,9 @@ extension DownloadTask:URLSessionTaskDelegate{
                 if(FileManager.default.fileExists(atPath: destFilePath)){
                     try FileManager.default.removeItem(atPath: destFilePath)
                 }
+                //Just create last path dir
+                FilePath.checkOrCreateDic(dicPath: (destFilePath as NSString).deletingLastPathComponent)
+                
                 try FileManager.default.moveItem(atPath: cacheFilePath, toPath: destFilePath)
                 
                 Log.i("Download Complete-\(urlString), saved path：\(destFilePath)")
