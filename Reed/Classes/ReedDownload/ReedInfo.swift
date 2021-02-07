@@ -86,8 +86,6 @@ public class ReedInfo: ZKORMModel {
     var retryCount = 0 //重试次数 md5 retry times in a downloadlist
     var lastPostTimeInterval:TimeInterval = Date().timeIntervalSince1970
     
-
-    
     override public class var isSaveDefaulttimestamp:Bool{
         return true
     }
@@ -100,6 +98,10 @@ public class ReedInfo: ZKORMModel {
         return ["pendingCencel","pendingRunning","retryCount","forcePause","lastPostTimeInterval"]
     }
 
+    public override func needAddIndexProperties() -> [String] {
+        return ["key","context","downloadListKey","status"]
+    }
+    
     init(retryCount:Int,key:String,url:String,cachePath:String,destPath:String,context:String,downloadListKey:String? = nil, md5:String? = nil) {
         self.retryCount = retryCount
         self.key = key
