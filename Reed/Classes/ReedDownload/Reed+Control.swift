@@ -35,7 +35,7 @@ extension Reed{
             cache.save(info!, forKey: info!.key) { (success) in
                 if success {
                     DispatchQueue.main.async {
-                         NotificationCenter.default.post(name: Noti_ReedDownload_Add_To_Downlaod_List, object: info!)
+                        NotificationCenter.default.post(name: Reed.downloadAddToDownlaodListNotification, object: info!)
                     }
                 }
             }
@@ -110,7 +110,7 @@ extension Reed{
         currentInfo.pendingRunning = true
         Log.i("即将下载start-- preDownloading status start")
         DispatchQueue.main.async {
-             NotificationCenter.default.post(name: Noti_ReedDownload_Start, object: currentInfo, userInfo: nil)
+            NotificationCenter.default.post(name: Reed.downloadStartNotification, object: currentInfo, userInfo: nil)
         }
        
         if currentInfo.downloadStatus == .faild || isReplace {
@@ -147,7 +147,7 @@ extension Reed{
                 if currentInfo.lastPostTimeInterval + Reed.shared.progressPostTimeInterval <= currentTimeInterval {
                     currentInfo.lastPostTimeInterval = currentTimeInterval
                     DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: Noti_ReedDownload_Progress, object: currentInfo, userInfo: nil)
+                        NotificationCenter.default.post(name: Reed.downloadProgressNotification, object: currentInfo, userInfo: nil)
                     }
                 }
                 

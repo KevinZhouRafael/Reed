@@ -30,7 +30,7 @@ import Foundation
 //}
 
 
-func getFileSize(cacheFilePath:String)->Int64{
+public func getFileSize(cacheFilePath:String)->Int64{
     var fileSize:Int64 = 0
     //try resumeData = Data(contentsOf: URL(fileURLWithPath:resumeDataPath))
     if let fileInfo = try? FileManager().attributesOfItem(atPath: cacheFilePath),

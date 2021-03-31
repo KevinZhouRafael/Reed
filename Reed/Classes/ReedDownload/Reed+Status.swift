@@ -215,13 +215,13 @@ extension Reed{
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     //发送full通知 post full notifications
                     downloadingInfos.forEach { (downloadInfo) in
-                        NotificationCenter.default.post(name: Noti_ReedDownload_FullSpace, object: downloadInfo)
+                        NotificationCenter.default.post(name: Reed.downloadFullSpaceNotification, object: downloadInfo)
                     }
                     if let info = preDownloadInfo {
-                        NotificationCenter.default.post(name: Noti_ReedDownload_FullSpace, object: info)
+                        NotificationCenter.default.post(name: Reed.downloadFullSpaceNotification, object: info)
                     }
 
-                    NotificationCenter.default.post(name: Noti_ReedDownload_FullSpace, object: nil)
+                    NotificationCenter.default.post(name: Reed.downloadFullSpaceNotification, object: nil)
                 }
             }
             

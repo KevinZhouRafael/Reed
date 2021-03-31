@@ -12,19 +12,21 @@ import ZKORM
 import GRDB
 import CocoaLumberjack
 
-/// 通知：object 是 ReedInfo
-public let Noti_ReedDownload_Add_To_Downlaod_List = NSNotification.Name(rawValue: "Noti_ReedDownload_Add_To_Downlaod_List")
-public let Noti_ReedDownload_Start = NSNotification.Name(rawValue: "Noti_ReedDownload_Start")
-public let Noti_ReedDownload_Progress = NSNotification.Name(rawValue: "Noti_ReedDownload_Progress")
-public let Noti_ReedDownload_Complete = NSNotification.Name(rawValue: "Noti_ReedDownload_Complete")
-public let Noti_ReedDownload_Fails = NSNotification.Name(rawValue: "Noti_ReedDownload_Fails")
-public let Noti_ReedDownload_Waiting = NSNotification.Name(rawValue: "Noti_ReedDownload_Waiting")
-public let Noti_ReedDownload_Pause = NSNotification.Name(rawValue: "Noti_ReedDownload_Pause")
-public let Noti_ReedDownload_Delete = NSNotification.Name(rawValue: "Noti_ReedDownload_Delete")
+extension Reed{
+    /// 通知：object 是 ReedInfo
+    public static let downloadAddToDownlaodListNotification = NSNotification.Name(rawValue: "ReedDownloadAddToDownlaodListNotification")
+    public static let downloadStartNotification = NSNotification.Name(rawValue: "ReedDownloadStartNotification")
+    public static let downloadProgressNotification = NSNotification.Name(rawValue: "ReedDownloadProgressNotification")
+    public static let downloadCompleteNotification = NSNotification.Name(rawValue: "ReedDownloadCompleteNotification")
+    public static let downloadFailsNotification = NSNotification.Name(rawValue: "ReedDownloadFailsNotification")
+    public static let downloadWaitingNotification = NSNotification.Name(rawValue: "ReedownloadWaitingNotification")
+    public static let downloadPauseNotification = NSNotification.Name(rawValue: "ReedDownloadPauseNotification")
+    public static let downloadDeleteNotification = NSNotification.Name(rawValue: "ReedDownloadDeleteNotification")
+    ///磁盘空间即将满: object 是 ReedInfo。 无论单个reedInfo还是批量reedInfo通知，都追加发一个object == nil的通知。
+    ///reedInfo: whenever how many notification with reedInfo object be post, the notification with nil reedInfo will be post after thems.
+    public static let downloadFullSpaceNotification = NSNotification.Name(rawValue: "ReedDownloadFullSpaceNotification")
+}
 
-///磁盘空间即将满: object 是 ReedInfo。 无论单个reedInfo还是批量reedInfo通知，都追加发一个object == nil的通知。
-///reedInfo: whenever how many notification with reedInfo object be post, the notification with nil reedInfo will be post after thems.
-public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_ReedDownload_FullSpace")
 
 //public protocol ReedDelegate:class{
 //    func md5FromFile(filePath:URL) -> String?
@@ -141,7 +143,7 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Fails, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadFailsNotification, object: downloadInfo, userInfo: nil)
                 }
                 
             }
@@ -158,7 +160,7 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Pause, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadPauseNotification, object: downloadInfo, userInfo: nil)
                 }
                 
             }
@@ -185,7 +187,7 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }, completion: {[weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Waiting, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadWaitingNotification, object: downloadInfo, userInfo: nil)
                 }
 
             }
@@ -204,7 +206,7 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }, completion: {(error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Progress, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadProgressNotification, object: downloadInfo, userInfo: nil)
                 }
                 
             }
@@ -219,7 +221,7 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
         }, completion: {[weak self](error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Complete, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadCompleteNotification, object: downloadInfo, userInfo: nil)
                 }
                 
             }
@@ -231,11 +233,11 @@ public let Noti_ReedDownload_FullSpace = NSNotification.Name(rawValue: "Noti_Ree
 
     func deleteAndPost(downloadInfo:ReedInfo,isTryStart:Bool = false){
         ZKORM.save(dbQueue: try! downloadInfo.getDBQueue(), {db in
-            try downloadInfo.update(db)
+            try downloadInfo.delete(db)
         }) { [weak self] (error) in
             if error == nil {
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: Noti_ReedDownload_Delete, object: downloadInfo, userInfo: nil)
+                    NotificationCenter.default.post(name: Reed.downloadDeleteNotification, object: downloadInfo, userInfo: nil)
                 }
             }
             

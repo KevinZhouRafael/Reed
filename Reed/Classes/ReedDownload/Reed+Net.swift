@@ -54,10 +54,10 @@ public extension Reed{
         NotificationCenter.default.addObserver(self, selector: #selector(appEnterForeground(noti:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         
         //空间已满
-        NotificationCenter.default.addObserver(self, selector: #selector(diskSpaceFullHandler(noti:)), name: Noti_ReedDownload_FullSpace, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(diskSpaceFullHandler(noti:)), name: Reed.downloadFullSpaceNotification, object: nil)
         
         //下载错误
-        NotificationCenter.default.addObserver(self, selector: #selector(downloadFailsHandler(noti:)), name: Noti_ReedDownload_Fails, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(downloadFailsHandler(noti:)), name: Reed.downloadFailsNotification, object: nil)
         
     }
     

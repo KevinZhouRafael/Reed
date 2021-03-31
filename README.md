@@ -196,13 +196,13 @@ key is a porperty of ReedInfo, you must set every task different identifier key.
 ### Notifications
 Noti_ReedDownload_Add_To_Downlaod_List<p>
 Noti_ReedDownload_Start<p>
-Noti_ReedDownload_Progress <p>
-Noti_ReedDownload_Complete<p>
-Noti_ReedDownload_Fails<p>
+Reed.downloadProgressNotification <p>
+Reed.downloadCompleteNotification<p>
+Reed.downloadFailsNotification<p>
 Noti_ReedDownload_Waiting <p>
-Noti_ReedDownload_Pause <p>
-Noti_ReedDownload_Delete <p>
-Noti_ReedDownload_FullSpace<p>
+Reed.downloadPauseNotification <p>
+Reed.downloadDeleteNotification <p>
+Reed.downloadFullSpaceNotification<p>
 Every notification contains a object, its type is ReedInfo.<p>
 If full space, Reed will post one or more notifications whose object is ReedInfo, and post 1 notification that object = nil.
 
