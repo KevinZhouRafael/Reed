@@ -29,6 +29,11 @@ public struct FilePath{
         return NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first!
     }
     
+    // ./Library/Application Support
+    public static func applicationSupportDictionary() -> String{
+        return  NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory,.userDomainMask, true).first!
+    }
+    
     // ./Library/Preferences -> UserDefault
     
     //./tmp

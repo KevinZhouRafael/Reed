@@ -9,20 +9,20 @@
 import Foundation
 public extension FilePath{
     static func getDownloadDBPath() -> String {
-        let dbPath = documentDictionary() + "/DBNAME_ReedDownload.db"
+        let dbPath = applicationSupportDictionary() + "/DBNAME_ReedDownload.db"
         FilePath.checkOrCreateFile(filePath: dbPath)
         return dbPath
     }
     
     static func getCacheFilePath(key:String) -> String{
-        let tempDic = FilePath.cacheDictionary() + "/temp"
+        let tempDic = cacheDictionary() + "/temp"
         FilePath.checkOrCreateDic(dicPath: tempDic)
         let cachePath = tempDic + "/" + key
         return cachePath
     }
     
     static func getRelativeCacheFilePath(key:String) -> String{
-        let tempDic = FilePath.cacheDictionary() + "/temp"
+        let tempDic = cacheDictionary() + "/temp"
         FilePath.checkOrCreateDic(dicPath: tempDic)
         
         return "Library/Caches/temp/\(key)"

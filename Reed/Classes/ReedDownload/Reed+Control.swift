@@ -55,8 +55,8 @@ extension Reed{
         guard let info = cache.get(key:key) else {
             return
         }
-        
-        start(key: info.key, url: info.url, destinationFilePath: info.destFilePath,downloadListKey:info.downloadListKey,md5:info.md5, isReplace: isReplace)
+        let url = Reed.shared.delegate?.getURL(downloadKey: key) ?? info.url
+        start(key: info.key, url: url, destinationFilePath: info.destFilePath,downloadListKey:info.downloadListKey,md5:info.md5, isReplace: isReplace)
 //        start(key: info.key, url: info.url, destinationFilePath: info.destFilePath)
     }
     
@@ -168,7 +168,8 @@ extension Reed{
                         
                         //重试三次。（一共4次） retry 3 times
                         if currentInfo.retryCount > 0 {
-                            Log.e("MD5校验剩余次数 md5 retry remain times :\(currentInfo.retryCount)，url:\(currentInfo.url)")
+                            let url = Reed.shared.delegate?.getURL(downloadKey: key) ?? currentInfo.url
+                            Log.e("MD5校验剩余次数 md5 retry remain times :\(currentInfo.retryCount)，url:\(url)")
                             currentInfo.retryCount -= 1
                             weak var weakSelf = self
                             DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 0.1, execute: {

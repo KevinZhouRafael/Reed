@@ -28,14 +28,20 @@ extension Reed{
 }
 
 
-//public protocol ReedDelegate:class{
+public protocol ReedDelegate:AnyObject{
 //    func md5FromFile(filePath:URL) -> String?
-//}
+    func getURL(downloadKey:String) -> String?
+}
 
+extension ReedDelegate{
+    func getURL(downloadKey:String) -> String?{
+        return nil
+    }
+}
 @objc public class Reed:NSObject {
     
     @objc public static let shared:Reed = Reed()
-//    public weak var delegate:ReedDelegate?
+    public weak var delegate:ReedDelegate?
     
     var cache:ReedCache!
     
