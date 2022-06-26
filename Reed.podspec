@@ -38,6 +38,6 @@ Reed is a downloader framework for Swift. It is many fetures, stability，fast, 
   s.dependency 'CocoaLumberjack/Swift'
   s.dependency 'ReachabilitySwift'
 
-  s.dependency 'ZKORM','0.6.0'
+  s.dependency 'ZKORM','0.6.1'
   s.dependency 'ZKCommonCrypto'
 end
