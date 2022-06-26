@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'Reed'
-  s.version          = '1.2.0'
+  s.version          = '1.2.1'
   s.summary          = 'Reed is a downloader framework for Swift. It is many fetures, stability，fast, ow coupling, easily extended.'
 
 # This description is used to generate tags and improve search results.
